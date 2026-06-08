@@ -11,12 +11,12 @@ SLOW_THRESHOLD_MS = 500
 MAX_RETRIES = 2
 
 ALERT_EMAIL = {
-    "enabled": False,          
-    "from":    "you@gmail.com",
-    "to":      "you@gmail.com",
+    "enabled": True,          
+    "from":    "jlucish12@gmail.com",
+    "to":      "jlucish12@gmail.com",
     "smtp":    "smtp.gmail.com",
     "port":    587,
-    "password": "your_app_password", 
+    "password": "bhns iwjf fjcw vphj", 
 }
 
 
