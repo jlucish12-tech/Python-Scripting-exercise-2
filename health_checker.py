@@ -5,28 +5,24 @@ import smtplib
 import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# ── Configuration ────────────────────────────────────────────────────────────
+
 TIMEOUT_SECONDS = 5
 SLOW_THRESHOLD_MS = 500
 MAX_RETRIES = 2
 
 ALERT_EMAIL = {
-    "enabled": False,          # Set to True to enable email alerts
+    "enabled": False,          
     "from":    "you@gmail.com",
     "to":      "you@gmail.com",
     "smtp":    "smtp.gmail.com",
     "port":    587,
-    "password": "your_app_password",  # Use Gmail App Password
+    "password": "your_app_password", 
 }
 
 
-# ── Feature 1 & 9: Load servers from env variable or config file ─────────────
+
 def load_servers():
-    """
-    Returns a list of URLs.
-    Checks environment variable SERVERS first,
-    then falls back to servers.json config file.
-    """
+    
     # Option A: environment variable
     env_val = os.environ.get("SERVERS")
     if env_val:
@@ -48,13 +44,9 @@ def load_servers():
     )
 
 
-# ── Feature 2, 3, 4, 5, 6, 12: Check a single server (with retries) ─────────
+
 def check_server(url):
-    """
-    Sends a GET request to url.
-    Retries up to MAX_RETRIES times before marking as failed.
-    Returns a result dict with url, status, status_code, response_ms, note.
-    """
+    
     attempt = 0
     last_error = None
 
@@ -111,7 +103,7 @@ def check_server(url):
     }
 
 
-# ── Feature 7: Format one result into a readable line ────────────────────────
+
 def format_result(result):
     """Turns a result dict into a human-readable status line."""
     url   = result["url"]
@@ -141,12 +133,8 @@ def format_result(result):
     return f"{url:<45} — {status_str:<12} {time_str:<12} {tag_str}".rstrip()
 
 
-# ── Feature 11: Run all checks in parallel ───────────────────────────────────
 def check_all_servers(servers):
-    """
-    Checks all servers concurrently using a thread pool.
-    Returns list of result dicts in completion order.
-    """
+   
     results = []
     with ThreadPoolExecutor(max_workers=10) as executor:
         future_to_url = {executor.submit(check_server, url): url for url in servers}
@@ -155,9 +143,9 @@ def check_all_servers(servers):
     return results
 
 
-# ── Feature 13: Send email alert ─────────────────────────────────────────────
+
 def send_alert(failed_urls):
-    """Sends an email listing all failed services (if alerts are enabled)."""
+    
     if not ALERT_EMAIL["enabled"] or not failed_urls:
         return
 
@@ -175,7 +163,7 @@ def send_alert(failed_urls):
         print(f"\n✗ Failed to send alert: {e}")
 
 
-# ── Main ──────────────────────────────────────────────────────────────────────
+
 if __name__ == "__main__":
     # Step 1: load servers
     servers = load_servers()
